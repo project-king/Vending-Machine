@@ -289,13 +289,15 @@ public:
 
 		//돌려준 잔액 상황을 보여줌.
 		cout << endl;
-		cout << "잔돈 : " << change->_total << "원" << endl << endl;
+		cout << "***********************************************" << endl;
+		cout << "잔돈 반환 : " << change->_total << "원" << endl << endl;
 
 		cout << "동전류 잔돈 출구" << endl;
 		cout << "100원 : " << change->_100 << "개 ";
 		cout << "500원 : " << change->_500 << "개 " << endl << endl;
 		cout << "지폐 투입구(지류 잔돈 출구)" << endl;
-		cout << "1000원 : " << change->_1000 << "개 " << endl << endl;
+		cout << "1000원 : " << change->_1000 << "개 " << endl;
+		cout << "***********************************************" << endl << endl;
 		//초기화
 		input = new Money();
 		change = new Money();
@@ -321,7 +323,7 @@ public:
 			cout << "100원 개수>";
 			cin >> tmp100;
 			if ((tmp100 + M->_mmoney->_100) > MONEY_100_MAX) {
-				cout << "기계에 들어갈 수 있는 100원 동전 양을 초과하였습니다." << endl << endl;
+				cout << endl << "!기계에 들어갈 수 있는 100원 동전 양을 초과하였습니다!" << endl << endl;
 				//tmp100을 음수로 설정함 : 사용자의 투입이 음수인 경우는 금고가 넘쳐서 돌려줘야함을 뜻한다.
 				tmp100 = -tmp100;
 				//더이상 500원이나 1000원 입력을 받지 않고 바로 return
@@ -338,7 +340,7 @@ public:
 			cout << "500원 개수>";
 			cin >> tmp500;
 			if ((tmp500 + M->_mmoney->_500) > MONEY_500_MAX) {
-				cout << "기계에 들어갈 수 있는 500원 동전 양을 초과하였습니다." << endl;
+				cout << endl << "!기계에 들어갈 수 있는 500원 동전 양을 초과하였습니다.!" << endl;
 				//tmp500을 음수로 설정함 : 사용자의 투입이 음수인 경우는 금고가 넘쳐서 돌려줘야함을 뜻한다.
 				tmp500 = -tmp500;
 				//더이상 1000원의 입력을 받지 않고 바로 return
@@ -356,7 +358,7 @@ public:
 			cout << "1000원 개수>";
 			cin >> tmp1000;
 			if ((tmp1000 + M->_mmoney->_1000) > MONEY_1000_MAX) {
-				cout << "기계에 들어갈 수 있는 지폐 양을 초과하였습니다." << endl;
+				cout << endl << "!기계에 들어갈 수 있는 지폐 양을 초과하였습니다.!" << endl;
 				//tmp1000을 음수로 설정함 : 사용자의 투입이 음수인 경우는 금고가 넘쳐서 돌려줘야함을 뜻한다.
 				tmp1000 = -tmp1000;
 				//바로 return
@@ -400,7 +402,7 @@ public:
 					//cout << "her ost" << endl;
 					//스타트 타임을 다시 지정해준다.
 					start_time = (unsigned)time(0);
-					cout << "다시 입력해주세요" << endl;
+					cout << "다시 입력해주세요" << endl << endl;
 					cout << "슬롯 번호>";
 					//반복문의 남은 코드를 무시하고 반복문 가장 위로 점프한다. 
 					continue;
@@ -511,12 +513,6 @@ public:
 			//getline함수는 두번째 매개변수로 받는 사이즈만큼의 입력만 첫번째 매개변수의 주소로 받고, 나머지는 버린다. 
 			cin.getline(name, DRINK_NAME_MAX_LENGTH + 1);
 
-			/*
-			if (1)
-			{
-			cout << "hihi" << endl;
-			continue;
-			}*/
 
 			//입력된 값이 NULL일 때 strcmp함수에서 첫번째 매개변수와
 			//두번째 매개변수가 같으면 0을 리턴하므로 if문으로 처리
@@ -583,17 +579,23 @@ public:
 
 		//예외처리를 위한 루프
 		while (input_test == false) {
+			//choice 값이 0이면 슬롯 번호를 선택 받음 - 음료 '슬롯 등록', '재고 편집', '슬롯 삭제'시 사용.
 			if (choice == 0) {
+				cout << "******1~10까지의 정수, 되돌아 가려면 11을 입력하세요******" << endl;
 				cout << "슬롯 번호>";
 				cin >> select_num;
 				//exception_test함수는 첫번째 매개변수가 올바른 값이면 true, 아니면 false를 리턴해서 input_test에 넣는다.
-				input_test = exception_test(select_num, DRINK_MAX_SLOT, 1);
+				//여기서 슬롯번호 선택은 -> 최대 값은 11, 최소 값은 1 (11은 돌아가기를 위한 번호)
+				input_test = exception_test(select_num, DRINK_MAX_SLOT+1, 1);
 			}
+			//choice 값이 1이면 재고 수를 선택 받음 - 음료 '재고 편집'시 사용.
 			else if (choice == 1) {
 				cout << "변경할 재고 수>";
 				cin >> select_num;
 				//exception_test함수는 첫번째 매개변수가 올바른 값이면 true, 아니면 false를 리턴해서 input_test에 넣는다.
+				//여기서 최대 값은 int형 변수가 담을 수 있는 최대 값 - 아무리 큰 값을 넣어도 15로 셋팅됨. 음수는 넣을 수 없음.
 				input_test = exception_test(select_num, INT_MAX, 0);
+				cout << endl;
 			}
 
 		}
@@ -860,21 +862,27 @@ int main() {
 							//빈 슬롯이 있을 경우
 							else {
 								//빈 슬롯을 입력받을 때까지 반복
-								while (1) {
-									cout << "슬롯 번호>";
-									cin >> slot_num;
-									//슬롯 번호 예외처리 - 한글, 최대최소 거름
-									if (exception_test(slot_num, DRINK_MAX_SLOT, 1)) {
-										//입력한 슬롯이 등록된 슬롯이면 다시 입력 받음
-										if (M->_drink[slot_num - 1]._isRegist)
-											cout << "!이미 등록된 슬롯 입니다! 슬롯 번호를 확인하세요!" << endl << endl;
+								//관리자의 select(0)에서 0의 역할은 슬롯을 받는다는 의미
+								int slot_num = A->select(0);
+								if (slot_num == 11) {
+									cout << "돌아가기" << endl << endl;
+									break;
+								} 
+								else{
+									//입력한 슬롯이 등록된 슬롯이면 다시 입력 받음
+									while (M->_drink[slot_num - 1]._isRegist) {
+										cout << "!이미 등록된 슬롯 입니다! 슬롯 번호를 확인하세요!" << endl << endl;
 										//입력한 슬롯이 빈 슬롯이면 while문 탈출
-										else
+										slot_num = A->select(0);
+										if (slot_num == 11) {
+											cout << "돌아가기" << endl << endl;
 											break;
+										}
 									}
+									//선택된 슬롯으로 관리자가 슬롯 정보를 입력해 Machine에 저장함.
+									if(slot_num != 11)
+										M->_drink[slot_num - 1] = A->regist_slot();
 								}
-								//선택된 슬롯으로 관리자가 슬롯 정보를 입력해 Machine에 저장함.
-								M->_drink[slot_num - 1] = A->regist_slot();
 							}
 						}
 						break;
@@ -883,6 +891,10 @@ int main() {
 						{
 							//관리자의 select(0)에서 0의 역할은 슬롯을 받는다는 의미
 							int slot_num = A->select(0);
+							if (slot_num == 11) {
+								cout << "돌아가기" << endl << endl;
+								break;
+							}
 							//슬롯 제거는 음료의 생성자로 초기화함
 							M->_drink[slot_num - 1] = Drink();
 							cout << endl;
@@ -892,18 +904,24 @@ int main() {
 						case 3:
 						{
 							M->show_drink();
-							int slot, change;
+							int slot_num, change;
 							//cout << "슬롯 번호>";
-							slot = A->select(0);
+							slot_num = A->select(0);
 
-							if (M->_drink[slot - 1]._isRegist) {
-								//cout << "변경할 재고 수>";
-								//관리자의 select(1)에서 1의 역할은 재고를 받는다는 의미
-								change = A->select(1);
-								M->_drink[slot - 1].set_stock(change);
+							if (slot_num == 11) {
+								cout << "돌아가기" << endl << endl;
+								break;
 							}
-							else
-								cout << "미등록 슬롯" << endl;
+							else {
+								if (M->_drink[slot_num - 1]._isRegist) {
+									//cout << "변경할 재고 수>";
+									//관리자의 select(1)에서 1의 역할은 재고를 받는다는 의미
+									change = A->select(1);
+									M->_drink[slot_num - 1].set_stock(change);
+								}
+								else
+									cout << "!미등록 슬롯!" << endl << endl;
+							}
 						}
 						break;
 						//1-1-1.관리자 모드 음료 관리 - 4. 재고확인
@@ -995,13 +1013,15 @@ int main() {
 				//문제!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (user_input_money->_100 < 0 || user_input_money->_500 < 0 || user_input_money->_1000 < 0) {
 					cout << endl;
-					cout << "초과된 돈" << endl;
+					cout << "***********************************************" << endl;
+					cout << "******초과된 돈****** 그대로 반환합니다." << endl;
 					cout << "동전류 잔돈 출구" << endl;
 					cout << "100원 : " << abs(user_input_money->_100) << "개 ";
 					cout << "500원 : " << abs(user_input_money->_500) << "개 " << endl;
 
 					cout << endl << "지폐 투입구(지류 잔돈 출구)" << endl;
 					cout << "1000원 : " << abs(user_input_money->_1000) << "개 " << endl << endl;
+					cout << "***********************************************" << endl;
 					//input의 값을 그대로 change로 옮기고(여러번째 거래일 경우 input에 이전 change가 남아있기때문)
 					M->change = M->input;
 
