@@ -411,7 +411,6 @@ public:
 
 				//입력받은 값의 첫번째 문자가 0일때
 				if (tmp_slot[0] == '0') {
-					//cout << "ㅗㅑㅗㅑㅗㅑ" << endl;
 					//cout << "test = " << temp_s_slot.at(1) << endl;
 					//cout << "test = " << (int)(temp_s_slot.at(1))-'0' << endl;
 					//01~09입력 경우
@@ -1010,7 +1009,6 @@ int main() {
 				user_input_money->edit_money(U->input_money());
 
 				//분기. 만약 사용자가 투입한 돈 때문에 기계의 금고가 수용량을 초과할 경우 투입한 돈 그대로 돌려주고 거래 중지.
-				//문제!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (user_input_money->_100 < 0 || user_input_money->_500 < 0 || user_input_money->_1000 < 0) {
 					cout << endl;
 					cout << "***********************************************" << endl;
@@ -1028,6 +1026,7 @@ int main() {
 					//change의 값을 user_input_money의 절대 값으로(이 경우에 Money의 파라미터 중 음수가 반드시 있으므로) 추가한다.
 					//M->change->edit_money(new Money(abs(user_input_money->_100), abs(user_input_money->_500), abs(user_input_money->_1000)));
 					//돈을 돌려준다. 
+					M->optimal_change(M->change->_total);
 					M->return_change();
 					break;
 				}
