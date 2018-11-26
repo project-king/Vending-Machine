@@ -1,5 +1,5 @@
 /*
-2018-2 전공기초프로젝트2(2040) 중간평가
+2018-2 전공기초프로젝트2(2040) 소스코드 및 2차 단위 검사 보고서
 6조 : 김나경, 방승희, 왕윤성
 주제 : 음료자판기 가상 시뮬레이션 프로그램
 */
@@ -13,16 +13,17 @@
 #include <time.h>
 
 #define DRINK_NAME_MAX_LENGTH 20            //음료 이름 최대 길이 영문기준 20자
-#define DRINK_MAX_SLOT 10               //자판기 슬롯 최대 10개
+#define DRINK_MAX_SLOT 10					//자판기 슬롯 최대 10개
 #define DRINK_MAX_STOCK 15                  //자판기 슬롯 한 개당 최대 재고 수 15개
-#define MONEY_100 100                  //100원
-#define MONEY_500 500                  //500원
+#define MONEY_100 100						//100원
+#define MONEY_500 500						//500원
 #define MONEY_1000 1000                     //1000원
-#define MONEY_100_MAX 100               //자판기 금고에 담을 수 있는 100원 최대 개수
-#define MONEY_500_MAX 50               //자판기 금고에 담을 수 있는 500원 최대 개수
-#define MONEY_1000_MAX 50               //자판기 금고에 담을 수 있는 1000원 최대 개수
-#define TIME_LIMIT 30                  //사용자 슬롯 번호 입력 제한 시간
+#define MONEY_100_MAX 100					//자판기 금고에 담을 수 있는 100원 최대 개수
+#define MONEY_500_MAX 50					//자판기 금고에 담을 수 있는 500원 최대 개수
+#define MONEY_1000_MAX 50					//자판기 금고에 담을 수 있는 1000원 최대 개수
+#define TIME_LIMIT 30						//사용자 슬롯 번호 입력 제한 시간 30초
 const char* filename = "machine_data.txt";  //자판기 데이터를 저장할 파일 이름
+
 using namespace std;
 
 bool exception_test(int num, int max, int min);
@@ -31,16 +32,16 @@ bool exception_test(int num, int max, int min);
 class Drink {
 public:
 	//멤버 변수
-	bool _isRegist;                     //등록된 슬롯 음료인가를 검사
+	bool _isRegist;							//등록된 슬롯 음료인가를 검사
 	char _name[DRINK_NAME_MAX_LENGTH + 1];  //음료의 이름
-	int _price;                        //음료의 가격
-	int _stock;                        //음료의 재고
+	int _price;								//음료의 가격
+	int _stock;								//음료의 재고
 
-					//멤버 함수
-					//생성자 - 아무것도 값을 넣지 않은 상태로 초기화하는 역할
+	//멤버 함수
+	//생성자 - 아무것도 값을 넣지 않은 상태로 초기화하는 역할
 	Drink() {
 		_isRegist = false;                  //아무런 값을 넣지 않은 즉, 슬롯에 등록되지 상태
-						//이름을 저장하는 char배열을 21자짜리 null로 초기화 함.
+		//이름을 저장하는 char배열을 21자짜리 null로 초기화 함.
 		memset(_name, 0, sizeof(char) * (DRINK_NAME_MAX_LENGTH + 1));
 		_price = 0;
 		_stock = 0;
@@ -48,9 +49,9 @@ public:
 
 	//생성자 오버로딩 - 음료에 값을 등록할 시 넘겨진 파라미터로 값 변경해주는 역할
 	Drink(char* name, int price, int stock) {
-		_isRegist = true;               //값을 넣었으므로 true
-					  /*for (int i = 0; i < DRINK_NAME_MAX_LENGTH; i++)
-					  _name[i] = name[i];*/
+		_isRegist = true;					//값을 넣었으므로 true
+		/*for (int i = 0; i < DRINK_NAME_MAX_LENGTH; i++)
+			_name[i] = name[i];*/
 		strcpy_s(_name, name);
 		_price = price;
 		_stock = stock;
@@ -58,7 +59,7 @@ public:
 
 	//재고를 변경하는 함수
 	void set_stock(int stock) {
-		_stock = stock;
+		_stock = stock;						//파라미터로 넘겨 받은 값으로 재고 수가 변경됨.
 	}
 };
 
@@ -66,13 +67,13 @@ public:
 class Money {
 public:
 	//멤버 변수
-	int _100 = 0;                     //100원의 개수
-	int _500 = 0;                     //500원의 개수
-	int _1000 = 0;                     //1000원의 개수
-	int _total = 0;                     //토탈 가격
+	int _100 = 0;							//100원의 개수
+	int _500 = 0;							//500원의 개수
+	int _1000 = 0;							//1000원의 개수
+	int _total = 0;							//토탈 가격
 
-					//멤버 함수
-					//생성자 - 초기화
+	//멤버 함수
+	//생성자 - 초기화
 	Money() {
 		_100 = 0;
 		_500 = 0;
@@ -118,23 +119,23 @@ private:
 	static Machine* instance;
 	//최초로 호출한 인스턴스를 가리키는 포인터
 	//이후 Machine 인스턴스를 다시 생성시 항상 이 포인터로 리턴해 줌.
-	//Machine클래스 정의 아래에서 초기화함.
+	//Machine클래스 정의 아래에서 초기화 함.
 
 public:
 	//멤버 변수
 	Drink * _drink;                     //Machine이 판매하는 음료
 	Money* _mmoney;                     //Machine의 금고
 	bool available;                     //Machine의 잔돈 여부
-	Money *input;                     //사용자가 입력한 금액 저장
-	Money *change;                     //사용자에게 거슬러줄 금액
-	int mode;                        //사용자 모드, 관리자 모드
+	Money *input;						//사용자가 입력한 금액 저장
+	Money *change;						//사용자에게 거슬러줄 금액
+	int mode;							//사용자 모드, 관리자 모드
 
-				   //멤버 함수
-				   //싱글톤 패턴 - 이후 생성시에도 계속 처음의 instance만 가리키게해 새로운 인스턴스 생성을 막음.
+	//멤버 함수
+	//싱글톤 패턴 - 이후 생성시에도 계속 처음의 instance만 가리키게해 새로운 인스턴스 생성을 막음.
 	static Machine* getInstance() {
-		if (instance == NULL)               //instance가 NULL이면 새 인스턴스를 생성.
-			instance = new Machine();       //instance가 새 인스턴스를 가리키게 한 후
-		return instance;               //instance 리턴. NULL이 아니면 그 instance 리턴.
+		if (instance == NULL)			//instance가 NULL이면 새 인스턴스를 생성.
+			instance = new Machine();	//instance가 새 인스턴스를 가리키게 한 후
+		return instance;				//instance 리턴. NULL이 아니면 그 instance 리턴.
 	}
 
 	//첫 번째로 나오는 빈 슬롯 리턴 - 이 프로그램에서는 전체에 빈 슬롯이 있는지를 체크하는 용도로만 사용.
@@ -157,18 +158,18 @@ public:
 	//잔돈의 토탈 금액을 파라미터로 받고, 금고 잔돈 상황을 고려한 최적 반환 방법 계산 후 돌려줄 수 있는지를 판단
 	//돌려줄 수 있다면 return true, 돌려줄 수 없다면 return false
 	bool optimal_change(int tmp) {
-		change = new Money();                  //돌려줄 돈 인스턴스 초기화. (Machine 생성시에도, main에 사용자에게 투입받기 전후에 초기화를 하지만, 안전 상 여기서도 한번 더 초기화 해줌.)
-		int change_1000, change_500, change_100;   //돌려줄 돈 갯수 저장할 변수
+		change = new Money();						//돌려줄 돈 인스턴스 초기화. (Machine 생성시에도, main에 사용자에게 투입받기 전후에 초기화를 하지만, 안전 상 여기서도 한번 더 초기화 해줌.)
+		int change_1000, change_500, change_100;	//돌려줄 돈 갯수 저장할 변수
 
 
-		change_1000 = tmp / MONEY_1000;            //1000원으로 돌려줄 수 있는 최대 개수 계산
+		change_1000 = tmp / MONEY_1000;				//1000원으로 돌려줄 수 있는 최대 개수 계산
 		if (_mmoney->_1000 < change_1000) {         //금고 안의 1000원 개수와 비교해 금고 1000원이 적으면
-			change_1000 = _mmoney->_1000;         //금고의 1000원 개수 만큼만 돌려준다 (능력만큼)
+			change_1000 = _mmoney->_1000;			//금고의 1000원 개수 만큼만 돌려준다 (능력만큼)
 		}
-		tmp -= change_1000 * MONEY_1000;         //돌려줄 수 있는 금액을 tmp에서 뺀다
+		tmp -= change_1000 * MONEY_1000;			//돌려줄 수 있는 금액을 tmp에서 뺀다
 
 
-						  //1000원과 마찬가지의 과정으로 500원 계산
+		//1000원과 마찬가지의 과정으로 500원 계산
 		change_500 = tmp / MONEY_500;
 		if (_mmoney->_500 < change_500) {
 			change_500 = _mmoney->_500;
@@ -431,7 +432,7 @@ public:
 					*slot = 10;
 					return true;
 				}
-				//10입력 한 경우
+				//11입력 한 경우
 				if (tmp_slot[0] == '1'&&tmp_slot[1] == '1') {
 					*slot = 11;
 					return true;
@@ -471,6 +472,8 @@ public:
 			cout << "100원 개수>";
 			cin >> tmp100;
 			//exception_test함수는 첫번째 매개변수가 올바른 값이면 true, 아니면 false를 리턴해서 input_test에 넣는다.
+			//최대 값은 금고가 수용할 수 있는 100원의 최대 갯수 - 현재 금고에 들어있는 100원 개수
+			//최소 값은 현재 금고가 가지고 있는 100원 개수의 음수를 취한 값
 			input_test = exception_test(tmp100, MONEY_100_MAX - (M->_mmoney->_100), -(M->_mmoney->_100));
 		}
 		//다음 반복문으로 들어가기 위해 다시 false로 바꿔준다.
@@ -512,7 +515,6 @@ public:
 			//getline함수는 두번째 매개변수로 받는 사이즈만큼의 입력만 첫번째 매개변수의 주소로 받고, 나머지는 버린다. 
 			cin.getline(name, DRINK_NAME_MAX_LENGTH + 1);
 
-
 			//입력된 값이 NULL일 때 strcmp함수에서 첫번째 매개변수와
 			//두번째 매개변수가 같으면 0을 리턴하므로 if문으로 처리
 			if (strcmp(name, "") == 0) {
@@ -520,7 +522,7 @@ public:
 				//다시 반복문 맨 위로 올라옴
 				continue;
 			}
-
+			//이름 사이즈를 넘어가는 공간 버퍼를 비워줌. 최대 21억 자리 수를 비울 수 있다.
 			if (cin.fail()) {
 				cin.clear();
 				//사용자가 INT_MAX(2147483647)개 이상의 알파벳을 치지 않는 이상 버퍼 문제를 해결해준다.
