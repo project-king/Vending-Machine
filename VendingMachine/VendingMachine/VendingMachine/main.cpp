@@ -682,9 +682,9 @@ bool file_read_function() {
 
 	//파일로부터 한줄씩 읽어올 데이터를 임시저장할 char배열
 	char buffer[DRINK_NAME_MAX_LENGTH + 1];      //파일에서 제일 긴 항목이 최대 20자인 음료이름이므로 그를 기준으로 버퍼 크기 잡기.
-						//+1은 공백
+	//+1은 공백
 
-						//처음으로 프로젝트를 돌려보면, 파일이 없으므로 바로 return true
+	//처음으로 프로젝트를 돌려보면, 파일이 없으므로 바로 return true
 	if (!datafile) {
 		cout << "데이터를 정상적으로 불러왔습니다." << endl << endl;
 		return true;
